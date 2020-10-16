@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
+import com.capgemini.censusloader.CensusAnalyzerException.ExceptionType;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
@@ -23,7 +24,7 @@ public class StateCensusAnalyzer {
 			return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new CensusAnalyzerException(e.getMessage(), ExceptionType.FILE_PROBLEM);
 		}
-		return 0;
 	}
 }

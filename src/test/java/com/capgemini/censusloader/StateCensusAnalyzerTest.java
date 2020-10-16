@@ -20,14 +20,24 @@ public class StateCensusAnalyzerTest {
 	@Test
 	public void givenIndiaCensusData_WithWrongFile_ShouldThrowException(){
 		String filePath = "IndianStateCensusDataA.csv";
-		
+		StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
 		try {
-			StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
 			stateCensusAnalyzer.processStateCensus(filePath);
 		} catch (CensusAnalyzerException e) {
 			// TODO Auto-generated catch block
 			assertEquals(CensusAnalyzerException.ExceptionType.FILE_PROBLEM, e.type);
 		}
+	}
+	@Test
+	public void givenWrongFileTypeWhenProcessedShouldThrowAnException() {
+		StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
+		String filePath = "IndianStateCensusData.pdf";
+		try {
+			stateCensusAnalyzer.processStateCensus(filePath);
+		} catch (CensusAnalyzerException e) {
+			assertEquals(CensusAnalyzerException.ExceptionType.FILE_PROBLEM, e.type);
+		}
+
 	}
 
 }
