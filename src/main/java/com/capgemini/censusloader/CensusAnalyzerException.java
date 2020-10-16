@@ -4,7 +4,7 @@ public class CensusAnalyzerException extends Exception {
 	ExceptionType type;
 
 	enum ExceptionType {
-		FILE_PROBLEM
+		FILE_PROBLEM,RUNTIME_EXCEPTION
 	}
 
 	public CensusAnalyzerException(String message, ExceptionType exceptionType) {

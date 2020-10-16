@@ -39,5 +39,17 @@ public class StateCensusAnalyzerTest {
 		}
 
 	}
+	@Test
+	public void givenWrongDelimiterTypeWhenProcessedShouldThrowAnException() {
+		StateCensusAnalyzer stateCensusAnalyzer = new StateCensusAnalyzer();
+		String filePath = "IndianStateCensusDataWrongDelimiter.csv";
+		try {
+			stateCensusAnalyzer.processStateCensus(filePath);
+		} catch (CensusAnalyzerException e) {
+			assertEquals(CensusAnalyzerException.ExceptionType.RUNTIME_EXCEPTION, e.type);
+			
+		}
+
+	}
 
 }

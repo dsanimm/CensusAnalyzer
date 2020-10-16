@@ -26,5 +26,8 @@ public class StateCensusAnalyzer {
 			e.printStackTrace();
 			throw new CensusAnalyzerException(e.getMessage(), ExceptionType.FILE_PROBLEM);
 		}
+		catch (RuntimeException e) {
+			throw new CensusAnalyzerException("Runtime Exception", CensusAnalyzerException.ExceptionType.RUNTIME_EXCEPTION);
+	}
 	}
 }
