@@ -17,12 +17,10 @@ public class StateCensusAnalyzer {
 	 * Returns the no. of entries in the file
 	 */
 	public int processIndiaCensus(String filePath) throws CensusAnalyzerException {
-		try (Reader reader = Files.newBufferedReader(Paths.get(filePath));) {
-			CsvToBean<CSVStateCensus> csvToBean = new CsvToBeanBuilder<CSVStateCensus>(reader)
-					.withType(CSVStateCensus.class).build();
-			Iterator<CSVStateCensus> iterator = csvToBean.iterator();
-			Iterable<CSVStateCensus> csvIterable = () -> iterator;
-			return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get(filePath));
+			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader,StateCodeCSV.class);
+			return (int) StreamSupport.stream(((Iterable) csvIterable).spliterator(), false).count();
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -35,14 +33,8 @@ public class StateCensusAnalyzer {
 	public int processStateCensus(String csvFilePath) throws CensusAnalyzerException {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-			CsvToBeanBuilder<StateCodeCSV> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
-			csvToBeanBuilder.withType(StateCodeCSV.class);
-			csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true).withSeparator(',');
-			CsvToBean<StateCodeCSV> csvToBean = csvToBeanBuilder.build();
-			Iterator<StateCodeCSV> censusCSVIterator = csvToBean.iterator();
-			Iterable<StateCodeCSV> csvIterable = () -> censusCSVIterator;
-			int numOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
-			return numOfEateries;
+			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader,StateCodeCSV.class);
+			return (int) StreamSupport.stream(((Iterable) csvIterable).spliterator(), false).count();
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -50,5 +42,17 @@ public class StateCensusAnalyzer {
 		} catch (RuntimeException e) {
 			throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.RUNTIME_EXCEPTION);
 		}
+	}
+	private <E> Iterator<E> getIteratorForCSVFile(Reader reader, Class<E> csvClass) throws CensusAnalyzerException {
+		try {
+			CsvToBeanBuilder<E> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
+			csvToBeanBuilder.withType(csvClass);
+			csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true).withSeparator(',');
+			CsvToBean<E> csvToBean = csvToBeanBuilder.build();
+			return csvToBean.iterator();
+		} catch (IllegalStateException e) {
+			throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.PARSE_EXCEPTION);
+		}
+
 	}
 }
