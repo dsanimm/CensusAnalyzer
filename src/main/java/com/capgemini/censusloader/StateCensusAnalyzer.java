@@ -14,7 +14,7 @@ public class StateCensusAnalyzer {
 	/**
 	 * Returns the no. of entries in the file
 	 */
-	public int processStateCensus(String filePath) {
+	public int processStateCensus(String filePath) throws CensusAnalyzerException {
 		try (Reader reader = Files.newBufferedReader(Paths.get(filePath));) {
 			CsvToBean<CSVStateCensus> csvToBean =  new CsvToBeanBuilder<CSVStateCensus>(reader)
 					                                  .withType(CSVStateCensus.class).build();
