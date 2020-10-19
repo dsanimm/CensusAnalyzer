@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 import com.capgemini.censusloader.CensusAnalyzerException.ExceptionType;
@@ -51,8 +52,8 @@ public class StateCensusAnalyzer {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(filePath));
 			ICSVBuilder csvBuilder=CSVBuilderFactory.getCSVBuilder();
-			Iterator<StateCodeCSV> iterator = csvBuilder.getIteratorForCSVFile(reader, StateCodeCSV.class);
-			return (int) getCountOfEntries(iterator);
+			List list = csvBuilder.getListForCSVFile(reader, StateCodeCSV.class);
+			return (int) getCountOfEntries(list);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -66,8 +67,8 @@ public class StateCensusAnalyzer {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
 			ICSVBuilder csvBuilder= CSVBuilderFactory.getCSVBuilder();
-			Iterator<StateCodeCSV> iterator = csvBuilder.getIteratorForCSVFile(reader, StateCodeCSV.class);
-			return getCountOfEntries(iterator);
+			List list = csvBuilder.getListForCSVFile(reader, StateCodeCSV.class);
+			return getCountOfEntries(list);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -79,9 +80,8 @@ public class StateCensusAnalyzer {
 
 	
 
-	private <E> int getCountOfEntries(Iterator<E> iterator) {
-		Iterable<E> csvIterable = () -> iterator;
-		return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+	private <E> int getCountOfEntries(List<E> list) {
+		return (int) list.stream().count();
 	}
 
 }
