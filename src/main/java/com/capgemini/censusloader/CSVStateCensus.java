@@ -4,14 +4,14 @@ import com.opencsv.bean.CsvBindByName;
 
 public class CSVStateCensus {
 
-	@CsvBindByName(column = "State Name", required = true)
-	private String state;
+	@CsvBindByName(column = "State Name", required = true) 
+	String state;
 	@CsvBindByName(column = "State Code", required = true)
-	private String code;
+	String code;
 	@CsvBindByName(column = "Population", required = true)
-	private int population;
+	int population;
 	@CsvBindByName(column = "TIN", required = true)
-	private int tinNumber;
+	int tinNumber;
 
 	@Override
 	public String toString() {
