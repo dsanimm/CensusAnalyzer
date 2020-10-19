@@ -19,8 +19,8 @@ public class StateCensusAnalyzer {
 	public int processIndiaCensus(String filePath) throws CensusAnalyzerException {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(filePath));
-			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader,StateCodeCSV.class);
-			return (int) StreamSupport.stream(((Iterable) csvIterable).spliterator(), false).count();
+			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader, StateCodeCSV.class);
+			return (int) getCountOfEntries(csvIterable);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -33,8 +33,8 @@ public class StateCensusAnalyzer {
 	public int processStateCensus(String csvFilePath) throws CensusAnalyzerException {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader,StateCodeCSV.class);
-			return (int) StreamSupport.stream(((Iterable) csvIterable).spliterator(), false).count();
+			Iterator<StateCodeCSV> csvIterable = getIteratorForCSVFile(reader, StateCodeCSV.class);
+			return getCountOfEntries(csvIterable);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -43,6 +43,7 @@ public class StateCensusAnalyzer {
 			throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.RUNTIME_EXCEPTION);
 		}
 	}
+
 	private <E> Iterator<E> getIteratorForCSVFile(Reader reader, Class<E> csvClass) throws CensusAnalyzerException {
 		try {
 			CsvToBeanBuilder<E> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
@@ -55,4 +56,10 @@ public class StateCensusAnalyzer {
 		}
 
 	}
+
+	private <E> int getCountOfEntries(Iterator<E> iterator) {
+		Iterable<E> csvIterable = () -> iterator;
+		return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+	}
+
 }
