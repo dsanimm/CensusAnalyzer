@@ -3,7 +3,7 @@ package com.capgemini.censusloader;
 public class CensusAnalyzerException extends Exception {
 	ExceptionType type;
 
-	enum ExceptionType {
+	public enum ExceptionType {
 		FILE_PROBLEM,RUNTIME_EXCEPTION, PARSE_EXCEPTION
 	}
 
