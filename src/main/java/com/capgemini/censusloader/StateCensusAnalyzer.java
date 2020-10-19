@@ -85,7 +85,7 @@ public class StateCensusAnalyzer {
 			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
 			ICSVBuilder csvBuilder = CSVBuilderFactory.getCSVBuilder();
 			List<CSVStateCensus> list = csvBuilder.getListForCSVFile(reader, StateCodeCSV.class);
-			List<CSVStateCensus> csvToList = list.stream().sorted((l1, l2) -> l1.state.compareTo(l2.state))
+			List<CSVStateCensus> csvToList = list.stream().sorted((l1, l2) -> (l1.population>l2.population)?1:0)
 					.collect(Collectors.toList());
 			Gson gson = new Gson();
 			String jsonList = gson.toJson(csvToList);
@@ -105,5 +105,7 @@ public class StateCensusAnalyzer {
 	private <E> int getCountOfEntries(List<E> list) {
 		return (int) list.stream().count();
 	}
+	
+
 
 }
