@@ -13,7 +13,35 @@ import com.capgemini.censusloader.CensusAnalyzerException.ExceptionType;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import opencsvbuilder.OpenCSVBuilder;
+import com.capgemini.opencsvbuilder.*;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.stream.StreamSupport;
+
+import com.capgemini.censusloader.CensusAnalyzerException.ExceptionType;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+
+import com.capgemini.opencsvbuilder.*;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.stream.StreamSupport;
+
+import com.capgemini.censusloader.CensusAnalyzerException.ExceptionType;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.capgemini.factory.*;
+import com.capgemini.interfaces.ICSVBuilder;
 
 public class StateCensusAnalyzer {
 	/**
@@ -22,8 +50,9 @@ public class StateCensusAnalyzer {
 	public int processIndiaCensus(String filePath) throws CensusAnalyzerException {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(filePath));
-			Iterator<StateCodeCSV> csvIterable = (new OpenCSVBuilder()).getIteratorForCSVFile(reader, StateCodeCSV.class);
-			return (int) getCountOfEntries(csvIterable);
+			ICSVBuilder csvBuilder=CSVBuilderFactory.getCSVBuilder();
+			Iterator<StateCodeCSV> iterator = csvBuilder.getIteratorForCSVFile(reader, StateCodeCSV.class);
+			return (int) getCountOfEntries(iterator);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
@@ -36,8 +65,9 @@ public class StateCensusAnalyzer {
 	public int processStateCensus(String csvFilePath) throws CensusAnalyzerException {
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-			Iterator<StateCodeCSV> csvIterable = (new OpenCSVBuilder()).getIteratorForCSVFile(reader, StateCodeCSV.class);
-			return getCountOfEntries(csvIterable);
+			ICSVBuilder csvBuilder= CSVBuilderFactory.getCSVBuilder();
+			Iterator<StateCodeCSV> iterator = csvBuilder.getIteratorForCSVFile(reader, StateCodeCSV.class);
+			return getCountOfEntries(iterator);
 		} catch (NoSuchFileException e) {
 			throw new CensusAnalyzerException("No Such File Found", CensusAnalyzerException.ExceptionType.FILE_PROBLEM);
 		} catch (IOException e) {
